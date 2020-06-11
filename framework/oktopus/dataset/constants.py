@@ -1,0 +1,6 @@
+OK_NODES_FILE = 'nodes.csv'
+OK_NODES_SERVICES_FILE = 'nodes_services.csv'
+OK_LINKS_FILE = 'links.csv'
+OK_SESSIONS_FILE = 'sessions_%s.csv'
+OK_SESSIONS_SERVICES_FILE = 'sessions_%s_services.csv'
+OK_SESSION_EVENTS_FILE = 'session_events_%s.csv'
