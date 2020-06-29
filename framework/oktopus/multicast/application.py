@@ -1,20 +1,50 @@
 import networkx as nx
 
 from ..dataset import read_isp_graph, parse_objects, OK_NODES_SERVICES_FILE
-from ..solver import OktopusSolver, CompactOktopusSolver, RSVPSolver, MLDPSolver, MTRSASolver, MSASolver, CPLEXMTESolver, CPLEXSCSolver
+from ..solver import OktopusSolver, RSVPSolver, MLDPSolver, MTRSASolver, MSASolver, CPLEXMTESolver, CPLEXSCSolver
 from ..solver import SRMcastRoutingTechnology, OFRoutingTechnology
+from ..solver import ALGO_MAP
 from network import Node, Link
-
-try:
-    from ..solver import XCyOktopusSolver
-    ok_solver = CyOktopusSolver
-except ImportError as ex:
-    print ex
-    ok_solver = OktopusSolver
 
 
 class App:
+    """
+    App class exposes the Application API. 
+    
+    The Application API allows the operator to control different aspects of an application such as topology, services, session, routing, and solution.
+
+    Attributes:
+        name : str
+            The name of the application.
+        technology : str
+            The name of the controller technologies.
+        routing: Routing
+            Routing object.
+        sessions: dict
+            Application sessions object.
+        nodes: dict
+            Network node object.
+        links: dict
+            Network link object.
+
+    """
+
     def __init__(self, name, topo, technology='sr', node_file=None, parse_services=False):
+        """
+        Parameters
+        ----------
+        name : str
+            The name of the application.
+        topo : networkx.Graph or str
+            The name or object of the network topology.
+        technology : str
+            The name of the controller technologies.
+        node_file: str
+            The file containing the network nodes.
+        parse_services: bool
+            To not parse the network service in the given network topology.
+        """
+
         self.name = name
         self.topo = topo
         self.technology = 'sr' if not technology else technology
@@ -85,29 +115,114 @@ class App:
                         self.links[node1.node_id, node2.node_id] = link
 
     def add_sessions(self, sessions):
+        """Add application sessions.
+
+        Extended description of function.
+
+        :param sessions: Application sessions object.
+        :type sessions: dict
+        """
+
         for s in sessions:
             self.sessions[s.addr] = s
 
     def get_sessions(self):
+        """Get application sessions.
+
+        Returns:
+            list
+                A list of application sessions.
+        """
+
         return self.sessions.values()
 
     def get_session(self, addr):
+        """Get an application session given the session address.
+
+        Parameters
+        ----------
+        addr: str
+            IP address of the application session.
+
+        Returns
+        -------
+        Session
+            The application session.
+        """
+
         return self.sessions.get(addr)
 
     def get_links(self):
+        """Get network links.
+
+        Returns
+        -------
+        Link
+            A list of network links.
+        """
+
         return self.links.values()
 
     def get_nodes(self):
+        """Get network nodes.
+
+        Returns
+        -------
+        Node
+            A list of network nodes.
+        """
+
         return self.nodes.values()
 
     def get_link(self, src, dst):
+        """Get network given the connected network nodes.
+
+        Parameters
+        ----------
+        src: str
+            The network ID of the source network node.
+        dst: str
+            The network ID of the destination network node.
+
+        Returns
+        -------
+        Link
+            The network link.
+        """
+
         link_key = (src, dst)
         return self.links.get(link_key)
 
     def get_node(self, node_id):
+        """Get network node object give the ID.
+
+        Parameters
+        ----------
+        node_id: str
+            The network ID of the network node.
+
+        Returns
+        -------
+        Node
+            The network node.
+        """
+
         return self.nodes.get(node_id)
 
     def get_nodes_by_service(self, srv_name):
+        """Get network nodes containing the given network service.
+
+        Parameters
+        ----------
+        srv_name: str
+            The name of the network service.
+
+        Returns
+        -------
+        list
+            A list of network nodes.
+        """
+
         if srv_name not in self._get_nodes_by_service_cache:
             nodes = []
             for node in self.get_nodes():
@@ -118,6 +233,19 @@ class App:
         return self._get_nodes_by_service_cache[srv_name]
 
     def get_nodes_ids_by_service(self, srv_name):
+        """Get network nodes IDs containing the given network service.
+
+        Parameters
+        ----------
+        srv_name: str
+            The name of the network service.
+
+        Returns
+        -------
+        list
+            A list of network nodes IDs.
+        """
+
         if srv_name not in self._get_nodes_ids_by_service_cache:
             nodes_ids = []
             for node in self.get_nodes():
@@ -128,38 +256,44 @@ class App:
         return self._get_nodes_ids_by_service_cache[srv_name]
 
     def print_services(self):
+        """Print network services deployed on the network."""
+
         for node in self.get_nodes():
             print node
             for srv in node.get_services():
                 print '\t', srv
 
     def set_routes(self, routes):
+        """Set the Routing object to the application.
+
+        The Routing object is used to define routing costs, constraints and objectives of the application.
+
+        Parameters
+        ----------
+        routes: Routing
+            The Routing object.
+        """
+
         self.routing = routes
         self.routing.init_maps(self)
 
-    def set_cache_dir(self, cache_dir):
+    def _set_cache_dir(self, cache_dir):
         self.topo_cache_dir = cache_dir
 
     def solve(self, algorithm='oktopus', **kwargs):
-        assert isinstance(algorithm, str) and algorithm in ['oktopus', 'compact', 'mldp', 'rspv', 'mtrsa', 'msa', 'cplex_mte', 'cplex_sc']
+        """Run the specified algorithm to solve the application.
+
+        Parameters
+        ----------
+        algorithm: str
+            The optimization engine algorithm.
+        """
+
+        assert isinstance(algorithm, str) and algorithm in ALGO_MAP
 
         # determine solver and technology classes
-        solver_cls = ok_solver
         tech_cls = SRMcastRoutingTechnology
-        if algorithm == 'compact':
-            solver_cls = CompactOktopusSolver
-        elif algorithm == 'mldp':
-            solver_cls = MLDPSolver
-        elif algorithm == 'rspv':
-            solver_cls = RSVPSolver
-        elif algorithm == 'mtrsa':
-            solver_cls = MTRSASolver
-        elif algorithm == 'msa':
-            solver_cls = MSASolver
-        elif algorithm == 'cplex_mte':
-            solver_cls = CPLEXMTESolver
-        elif algorithm == 'cplex_sc':
-            solver_cls = CPLEXSCSolver
+        solver_cls = ALGO_MAP[algorithm]
 
         if self.technology == 'sdn':
             tech_cls = OFRoutingTechnology
@@ -168,17 +302,17 @@ class App:
         # find a solution for the network application
         solver = solver_cls(self, **kwargs)
         solution = solver.optimize()
-        self.post_solution(solution)
+        self._post_solution(solution)
 
         # encode the solution to the corresponding routing technology
         tech = tech_cls(solution)
         tech.encode()
 
-        # self.check_constraints(solution)
-        # self.print_solution(solution, details=False)
-        self.print_solution(solution, details=True)
+        # self._check_constraints(solution)
+        # self._print_solution(solution, details=False)
+        self._print_solution(solution, details=True)
 
-    def post_solution(self, solution):
+    def _post_solution(self, solution):
         # set session.delay, session.load and session.max_hops
         for addr, tree in solution.trees.iteritems():
             session = self.get_session(addr)
@@ -203,7 +337,7 @@ class App:
             session.load = max_load
             session.max_hops = max_hops
 
-    def check_constraints(self, solution):
+    def _check_constraints(self, solution):
         # TODO check service chaining, pass nodes
         for addr, tree in solution.trees.iteritems():
             session = self.get_session(addr)
@@ -245,7 +379,7 @@ class App:
                 for str_item in str_list:
                     print str_item
 
-    def print_solution(self, solution, details=True):
+    def _print_solution(self, solution, details=True):
         if details:
             for addr, tree in solution.trees.iteritems():
                 session = self.get_session(addr)

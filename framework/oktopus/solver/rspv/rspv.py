@@ -1,4 +1,4 @@
-from base import Solver
+from ..base import Solver
 
 
 class RSVPSolver(Solver):

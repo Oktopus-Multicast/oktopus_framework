@@ -1,10 +1,10 @@
-from base import Solver
-from solution import Solution
+from ..base import Solver
+from ..solution import Solution
 import time
 import networkx as nx
 from collections import defaultdict
 from msa_utils import steiner_tree
-from ..multicast.session import Session
+from ...multicast.session import Session
 import statistics 
 
 class ResourceOverloaded(Exception):

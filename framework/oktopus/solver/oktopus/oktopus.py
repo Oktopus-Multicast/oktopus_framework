@@ -13,10 +13,10 @@ except ImportError as e:
     GRAPHVIZ = False
 
 
-from base import Solver
-from solution import Solution
+from ..base import Solver
+from ..solution import Solution
 from oktopus_utils import pick_dst, calculate_simple_paths_regenerate, calculate_simple_paths3, calculate_simple_paths, calculate_simple_paths_trie, calculate_simple_paths_shrink
-from ..multicast.session import Session
+from ...multicast.session import Session
 
 MAX_PATH_COST = 10 ** 12
 

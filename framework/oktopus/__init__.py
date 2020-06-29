@@ -3,11 +3,10 @@ from .multicast.network import Node, Link
 from .multicast.service import Service, make_service
 from .multicast.session import Session
 from .multicast.routing import Routing
-from .multicast.defo_proxy import from_defo
 
 from .utils.units import giga, mega, kilo, milli
 from .utils.parser import load_links, load_nodes, load_sessions
 
 __all__ = ['App', 'Node', 'Link', 'Service', 'Session', 'Routing',
            'load_nodes', 'load_links', 'load_sessions', 'make_service',
-           'giga', 'mega', 'kilo', 'milli', 'from_defo']
+           'giga', 'mega', 'kilo', 'milli']

@@ -1,5 +1,5 @@
-from base import Solver
-from solution import Solution
+from ..base import Solver
+from ..solution import Solution
 
 from collections import defaultdict, OrderedDict
 from multiprocessing import cpu_count

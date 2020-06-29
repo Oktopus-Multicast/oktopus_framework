@@ -4,8 +4,8 @@ from random import uniform
 
 import networkx as nx
 
-from base import Solver
-from solution import Solution
+from ..base import Solver
+from ..solution import Solution
 
 
 class MLDPSolver(Solver):

@@ -11,7 +11,7 @@ from cytoolz import merge, partial
 from nx_disjoint_paths import edge_disjoint_paths
 
 
-from ..multicast.session import Session
+from ...multicast.session import Session
 
 
 def pick_dst(session, priority_list, ignore=None):
