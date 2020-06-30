@@ -13,6 +13,7 @@ __all__ = ['OktopusSolver', 'MLDPSolver', 'RSVPSolver',
            'OFRoutingTechnology', 'SRMcastRoutingTechnology', 'MTRSASolver', 'MSASolver', 'CPLEXMTESolver', 'CPLEXSCSolver']
 
 ALGO_MAP = {
+    'oktopus': OktopusSolver,
     'mldp': MLDPSolver,
     'rspv': RSVPSolver,
     'mtrsa': MTRSASolver,

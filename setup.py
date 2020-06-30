@@ -4,8 +4,8 @@
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 
-import numpy
-from Cython.Build import cythonize
+# import numpy
+# from Cython.Build import cythonize
 
 # ext = [Extension('*', sources=["src/oktopus/**/*.pyx"],
 #                  include_dirs=[numpy.get_include()],
