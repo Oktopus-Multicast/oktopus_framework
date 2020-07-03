@@ -13,7 +13,8 @@ class App:
     
     The Application API allows the operator to control different aspects of an application such as topology, services, session, routing, and solution.
 
-    Attributes:
+    Attributes
+    ----------
         name : str
             The name of the application.
         technology : str
@@ -117,10 +118,10 @@ class App:
     def add_sessions(self, sessions):
         """Add application sessions.
 
-        Extended description of function.
-
-        :param sessions: Application sessions object.
-        :type sessions: dict
+        Parameters
+        ----------
+        sessions: dict
+            Application sessions object.
         """
 
         for s in sessions:
@@ -129,7 +130,8 @@ class App:
     def get_sessions(self):
         """Get application sessions.
 
-        Returns:
+        Returns
+        ----------
             list
                 A list of application sessions.
         """

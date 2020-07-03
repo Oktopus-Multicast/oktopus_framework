@@ -5,13 +5,7 @@ This repository contains the Oktopus Framework module.
 
 ## Install
 
-First, download this repository and install the requirements of the Oktopus Evaluation Scripts by running:
-
-    git clone https://github.com/oktopus-multicast/oktopus_framework.git
-    cd oktopus_framework
-    pip install -r requirements.txt
-
-Finally, install the Oktopus Framework module by running:
+Install the Oktopus Framework module by running:
 
     pip install -e .
 
