@@ -11,7 +11,7 @@ Install the Oktopus Framework module by running:
 
 ## Usage
 
-Visit the [documentation site](https://oktopus-multicast.github.io/oktopus_site/docs/overview) for details.
+Visit the [documentation site](https://oktopus-project.org/docs/overview) for details.
 
 ---
 
